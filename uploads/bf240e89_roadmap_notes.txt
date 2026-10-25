@@ -1,0 +1,1 @@
+Enterprise AI Agents Roadmap 2026. Key milestone: Autonomous tool use via MCP standards. Scalability target: 99.9% uptime.
