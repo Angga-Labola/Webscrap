@@ -3,267 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Antigravity PPTX Studio | AI-Powered by Google Antigravity & MCP</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="color-scheme" content="dark">
+    <title>Browser</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            /* FIX 1: Allow the index page to grow naturally and scroll */
+            min-height: 100vh;
+            overflow-y: auto; 
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 8px;
+            font-size: 14px;
+        }
+        button {
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        /* FIX 2: Remove strict heights from the container */
+        #result-container {
+            width: 100%;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: none; 
+            margin-top: 20px;
+        }
+        /* FIX 3: Disable iframe internal scrollbars since the parent page will scroll */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            overflow: hidden; 
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+            display: none;
+        }
+    </style>
 </head>
-<body>
-    <div class="app-layout">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="header-container">
-                <div class="brand">
-                    <div class="brand-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <div class="brand-text">
-                        <h1>Antigravity <span>PPTX Studio</span></h1>
-                        <span class="brand-tag">Powered by Google Antigravity SDK & MCP</span>
-                    </div>
-                </div>
 
-                <div class="header-status">
-                    <div class="status-badge" id="systemStatus">
-                        <span class="status-dot"></span>
-                        <span class="status-label">Antigravity Connected</span>
-                    </div>
-                    <button class="btn-ghost" id="recentHistoryBtn" type="button">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        Recent Decks
-                    </button>
-                </div>
-            </div>
-        </header>
+<body style="background-color: #000000; color: #73613c;">
 
-        <!-- Main Content -->
-        <main class="main-container">
-            <div class="hero-intro">
-                <h2>Transform Multi-Source Knowledge into <span class="gradient-text">Executive Presentations</span></h2>
-                <p>Input raw text, upload documents (PDF, Word, PPTX), or paste URLs. Google Antigravity Agent analyzes and synthesizes everything, generating a PowerPoint deck via Model Context Protocol (MCP).</p>
-            </div>
+<nav style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.3); 
+    backdrop-filter: blur(10px); 
+    padding: 1rem 5%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3); 
+    position: sticky;
+    top: 0;
+    z-index: 1000;">
+        
+        <ul style="
+        list-style: none;
+        display: flex;
+        gap: 2rem;">
+            <a href="https://github.io" style="text-decoration: none; color : #73613c; font-size: 1rem;">Home</a>
+            <a href="https://github.io" style="text-decoration: none; color : #73613c; font-size: 1rem;">Creeds</a>
+            <a href="https://github.io" style="text-decoration: none; color : #73613c; font-size: 1rem;">Articles</a>
+            <a href="https://github.io" style="text-decoration: none; color : #73613c; font-size: 1rem;">Apps</a>
+        </ul>
+</nav>
 
-            <!-- Form Container -->
-            <form id="generatorForm" class="studio-card" enctype="multipart/form-data">
-                <!-- Source Input Tabs -->
-                <div class="tabs-header">
-                    <div class="tabs-nav">
-                        <button type="button" class="tab-btn active" data-tab="tab-text">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
-                            Text & Prompt
-                            <span class="tab-badge" id="badgeText">Ready</span>
-                        </button>
-                        <button type="button" class="tab-btn" data-tab="tab-doc">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                            Document File
-                            <span class="tab-badge" id="badgeDoc">Optional</span>
-                        </button>
-                        <button type="button" class="tab-btn" data-tab="tab-url">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                            Web URL(s)
-                            <span class="tab-badge" id="badgeUrl">Optional</span>
-                        </button>
-                    </div>
-                    <span class="source-hint">Combine any or all 3 sources simultaneously!</span>
-                </div>
+    <h2>Incognito Browser</h2>
+    <form id="form" action="/userinput" method="post">
+        <textarea type="text" id="input" name="text" required
+         style="width: 100%; max-width: 600px; height: 100px; box-sizing: border-box;" placeholder="Enter the URL here..."></textarea>
+        <br><br>
+        <button type="submit" style="display: inline-block; padding: 10px 20px; background-color: #3E5641; color : white; text-decoration: none; border-radius: 5px; text-align: center; border: none;">
+            Submit
+        </button>
+    </form>
 
-                <!-- Tab Contents -->
-                <div class="tab-panes">
-                    <!-- Tab 1: Text Prompt -->
-                    <div class="tab-pane active" id="tab-text">
-                        <label for="textInput" class="field-label">Topic, Notes, or Presentation Brief:</label>
-                        <textarea id="textInput" name="text" rows="5" placeholder="e.g. Provide an executive summary of our Q3 AI Transformation strategy. Focus on agent autonomy, tool integration via MCP, team efficiency gains, and 2027 technical milestones..."></textarea>
-                        <div class="sample-prompts">
-                            <span>Quick Samples:</span>
-                            <button type="button" class="sample-tag" data-sample="AI Agents in Enterprise: Architecture, MCP tooling standards, and ROI impacts">AI Agents in Enterprise</button>
-                            <button type="button" class="sample-tag" data-sample="Renewable Energy Transition: 2026-2030 Global Investments, Grid Modernization, and Carbon Metrics">Clean Tech & Energy</button>
-                            <button type="button" class="sample-tag" data-sample="Product Launch Strategy: Multi-tier go-to-market plan, competitive differentiators, and executive roadmap">Product Launch Deck</button>
-                        </div>
-                    </div>
+    <div id="loadingText" class="loading">Launching browser and loading page... Please wait.</div>
 
-                    <!-- Tab 2: Document Upload -->
-                    <div class="tab-pane" id="tab-doc">
-                        <div class="upload-dropzone" id="dropZone">
-                            <input type="file" id="fileInput" name="document" accept=".pdf,.docx,.pptx,.txt,.md,.csv,.json" class="file-hidden">
-                            <div class="dropzone-content" id="dropContent">
-                                <div class="drop-icon">
-                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                </div>
-                                <p class="drop-primary">Drag & drop your file here, or <span class="highlight">browse</span></p>
-                                <p class="drop-secondary">Supports PDF, DOCX, PPTX, TXT, Markdown, CSV (up to 32MB)</p>
-                            </div>
-                            <div class="file-selected-box hidden" id="fileInfoBox">
-                                <div class="file-icon">📄</div>
-                                <div class="file-details">
-                                    <span class="file-name" id="fileNameDisplay">document.pdf</span>
-                                    <span class="file-size" id="fileSizeDisplay">1.2 MB</span>
-                                </div>
-                                <button type="button" class="btn-remove-file" id="removeFileBtn" title="Remove file">&times;</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tab 3: URL Ingestion -->
-                    <div class="tab-pane" id="tab-url">
-                        <label for="urlInput" class="field-label">Target Web URL(s) to scrape and summarize:</label>
-                        <textarea id="urlInput" name="urls" rows="4" placeholder="Enter one or multiple URLs (separated by newlines or commas)&#10;https://example.com/article&#10;https://en.wikipedia.org/wiki/Model_Context_Protocol"></textarea>
-                        <p class="field-help">Our crawler strips ads, headers, and navigation, extracting only core article content for presentation synthesis.</p>
-                    </div>
-                </div>
-
-                <!-- Deck Options Grid -->
-                <div class="options-section">
-                    <h3 class="section-title">Presentation Customization</h3>
-                    <div class="options-grid">
-                        <!-- Custom Title -->
-                        <div class="form-group">
-                            <label for="customTitle" class="field-label">Custom Presentation Title (Optional):</label>
-                            <input type="text" id="customTitle" name="title" placeholder="Auto-generated by AI if left blank">
-                        </div>
-
-                        <!-- Presenter Name -->
-                        <div class="form-group">
-                            <label for="presenterName" class="field-label">Presenter / Organization:</label>
-                            <input type="text" id="presenterName" name="presenter" value="Google Antigravity AI">
-                        </div>
-
-                        <!-- Slide Count -->
-                        <div class="form-group slide-counter-group">
-                            <div class="label-with-val">
-                                <label for="slideCount" class="field-label">Target Slide Count:</label>
-                                <span class="range-val" id="slideCountVal">6 Slides</span>
-                            </div>
-                            <input type="range" id="slideCount" name="slide_count" min="3" max="15" value="6" step="1">
-                            <div class="range-ticks">
-                                <span>3 (Brief)</span>
-                                <span>6 (Standard)</span>
-                                <span>10 (Detailed)</span>
-                                <span>15 (Deep)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Theme Selector -->
-                    <div class="theme-selector-section">
-                        <label class="field-label">Select Visual Design Theme:</label>
-                        <div class="theme-cards-grid">
-                            {% for key, val in themes.items() %}
-                            <label class="theme-card {% if key == 'modern_indigo' %}selected{% endif %}">
-                                <input type="radio" name="theme" value="{{ key }}" {% if key == 'modern_indigo' %}checked{% endif %}>
-                                <div class="theme-preview" style="background: linear-gradient(135deg, #{{ val.primary }} 0%, #{{ val.secondary }} 100%);">
-                                    <div class="theme-accent-bar" style="background: #{{ val.accent }};"></div>
-                                </div>
-                                <div class="theme-info">
-                                    <span class="theme-name">{{ val.name }}</span>
-                                    <span class="theme-desc">{{ val.description }}</span>
-                                </div>
-                            </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Button -->
-                <div class="action-footer">
-                    <button type="submit" class="btn-generate" id="generateBtn">
-                        <span class="btn-text">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            Generate PowerPoint Deck with MCP
-                        </span>
-                    </button>
-                </div>
-            </form>
-
-            <!-- Real-Time Progress Overlay / Box -->
-            <div class="progress-box hidden" id="progressBox">
-                <div class="progress-header">
-                    <div class="spinner-orbit"></div>
-                    <div>
-                        <h4 id="progressStatusTitle">Antigravity Agent Orchestrating...</h4>
-                        <p id="progressStatusSub">Synthesizing knowledge and communicating with PowerPoint MCP Server</p>
-                    </div>
-                </div>
-                <div class="stepper-track">
-                    <div class="step-item active" id="step1">
-                        <div class="step-circle">1</div>
-                        <div class="step-label">Ingesting Sources</div>
-                    </div>
-                    <div class="step-item" id="step2">
-                        <div class="step-circle">2</div>
-                        <div class="step-label">Antigravity Agent</div>
-                    </div>
-                    <div class="step-item" id="step3">
-                        <div class="step-circle">3</div>
-                        <div class="step-label">MCP Slide Tool</div>
-                    </div>
-                    <div class="step-item" id="step4">
-                        <div class="step-circle">4</div>
-                        <div class="step-label">PowerPoint (.pptx) Ready</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Result Section -->
-            <div class="result-box hidden" id="resultBox">
-                <div class="result-header">
-                    <div class="result-meta">
-                        <span class="success-badge">Generation Complete</span>
-                        <h3 id="resultTitle">Presentation Title</h3>
-                        <p id="resultSubtitle" class="result-theme-info">Widescreen 16:9 • Generated via MCP</p>
-                    </div>
-                    <div class="result-actions">
-                        <a href="#" id="downloadLink" class="btn-download" download>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Download PowerPoint (.pptx)
-                        </a>
-                        <button type="button" class="btn-secondary" id="resetBtn">Create Another</button>
-                    </div>
-                </div>
-
-                <!-- Agent commentary -->
-                <div class="agent-commentary" id="agentCommentaryContainer">
-                    <h4>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        Google Antigravity Agent Synthesis
-                    </h4>
-                    <div class="commentary-content" id="agentCommentaryText"></div>
-                </div>
-
-                <!-- Slide Deck Preview Grid -->
-                <div class="deck-preview-section">
-                    <h4>Generated Slides (<span id="slideCountDisplay">0</span> Slides)</h4>
-                    <div class="slides-grid" id="slidesGrid">
-                        <!-- Dynamic slide preview cards -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Presentations Drawer / Modal -->
-            <div class="modal-backdrop hidden" id="historyModal">
-                <div class="modal-card">
-                    <div class="modal-header">
-                        <h3>Recent Presentations</h3>
-                        <button type="button" class="btn-close" id="closeHistoryBtn">&times;</button>
-                    </div>
-                    <div class="modal-body" id="historyList">
-                        <p class="loading-text">Loading recent decks...</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <footer class="app-footer">
-            <p>Antigravity PPTX Studio &bull; Powered by Google Antigravity Python SDK &bull; Model Context Protocol (MCP) &bull; python-pptx</p>
-        </footer>
+    <div id="result-container">
+        <iframe id="renderFrame" scrolling="no"></iframe>
     </div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+    document.getElementById('form').addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+        
+        const urlInput = document.getElementById('input').value;
+        const loadingText = document.getElementById('loadingText');
+        const container = document.getElementById('result-container');
+        const iframe = document.getElementById('renderFrame');
+
+        loadingText.style.display = 'block';
+        container.style.display = 'none';
+
+        try {
+            const response = await fetch('/userinput', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: urlInput
+                })
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+
+            const htmlContent = await response.text();
+
+            const iframeDoc = iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(htmlContent);
+            iframeDoc.close();
+
+            container.style.display = 'block';
+
+            // FIX 4: Dynamically calculate the full height of the scraped website content
+            // and apply that exact pixel height directly to the iframe layout.
+            iframe.onload = function() {
+                setTimeout(() => {
+                    const scrollHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+                    iframe.style.height = scrollHeight + 'px';
+                    container.style.height = scrollHeight + 'px';
+                }, 100); // Small delay ensures content completely populates first
+            };
+            
+            // Trigger the height calculation immediately if iframe is already loaded
+            const scrollHeight = iframeDoc.documentElement.scrollHeight;
+            iframe.style.height = scrollHeight + 'px';
+            container.style.height = scrollHeight + 'px';
+
+        } catch (error) {
+            alert('Error loading page: ' + error.message);
+        } finally {
+            loadingText.style.display = 'none';
+        }
+    });
+</script>
+
 </body>
 </html>
-
