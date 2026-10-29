@@ -1,67 +1,52 @@
 import asyncio
-from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from playwright_stealth import Stealth
 from playwright.async_api import async_playwright
-import os
+
+from fastapi import FastAPI, Form
+from fastapi.responses import FileResponse, HTMLResponse
+from pydantic import BaseModel
+
+class userinput(BaseModel):
+    text: str
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
 
-@app.get("/", response_class=HTMLResponse)
-async def read_form(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.post("/browse", response_class=HTMLResponse)
-async def browse_link(request: Request, url: str = Form(...)):
-    screenshot_path = "static/screenshot.png"
-    page_title = ""
-    page_content = ""
-    error_message = None
+@app.get("/")
+async def root():
+    return FileResponse("templates/index.html")
 
-    try:
-        async with async_playwright() as p:
-            # Launch the browser headlessly
-            browser = await p.chromium.launch(headless=True)
-            
-            # Create a completely isolated, incognito browser context
-            context = await browser.new_context()
-            
-            # Open a new page within the incognito context
-            page = await context.new_page()
-            
-            # Navigate to the user-provided URL
-            await page.goto(url, wait_until="networkidle", timeout=15000)
-            
-            # Extract data from the page
-            page_title = await page.title()
-            
-            # Get clean inner text from the body element
-            page_content = await page.locator("body").inner_text()
-            
-            # Truncate content for display readability
-            page_content = page_content[:2000] + "..." if len(page_content) > 2000 else page_content
+@app.post("/userinput", response_class=HTMLResponse)
+async def open_page(userinput:userinput):
+    async with Stealth().use_async(async_playwright()) as playwright:
+        browser = await playwright.chromium.launch(headless=True)
+        page = await browser.new_page(viewport={"width": 1920, "height": 1080})
+        await page.goto(userinput.text)
+        html_content = await page.content()
+        return html_content
 
-            # Clean up the session
-            await context.close()
-            await browser.close()
-            
-    except Exception as e:
-        error_message = f"Failed to browse page: {str(e)}"
-
-    return templates.TemplateResponse(
-        "index.html", 
-        {
-            "request": request, 
-            "url": url, 
-            "title": page_title, 
-            "content": page_content,
-            "error": error_message
-        }
-    )
+    
 
 if __name__ == "__main__":
     import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+
+
+
+
+
+
+
+
+
+""""
+async def main():
+    async with Stealth().use_async(async_playwright()) as playwright:
+        browser = await playwright.chromium.launch(headless=False)
+        page = await browser.new_page()
+        await page.goto("https://x.com/elonmusk")
+        await page.pause(); 
+
+asyncio.run(main())
+"""
